@@ -1,8 +1,9 @@
 # Hogeschool-Project-OP1
+------------------------
 
-Hallo
+Hallo allemaal
 
-Hier kunnen we allemaal informatie toevoegen
+Hier kunnen we allemaal informatie toevoegen als je wilt
 
 
 
@@ -10,5 +11,4 @@ Links:
     Classroom, https://classroom.google.com/
 
 
-    
-Meer info heb ik nog even niet
+Meer info heb ik nog niet
