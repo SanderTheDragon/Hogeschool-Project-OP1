@@ -27,12 +27,12 @@ const int latchPin = 10;
 const int clockPin = 11;
 const int dataPin  = 12;
 
-const int disp1 = 0;
-const int disp2 = 1;
-const int disp3 = 2;
-const int disp4 = 3;
+const int disp1 = 2;
+const int disp2 = 3;
+const int disp3 = 4;
+const int disp4 = 5;
 
-const int button1 = 5;
+const int button1 = 7;
 
 void setup() 
 {
