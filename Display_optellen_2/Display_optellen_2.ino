@@ -56,6 +56,11 @@ void loop()
     i++;
     
   SevenSegDisplay(i);
+  
+  delay(100);
+  
+  if (i > 9999)
+    i = 0;
 }
 
 void DisplayADigit(int disp, byte digit)
