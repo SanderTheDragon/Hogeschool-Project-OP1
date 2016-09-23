@@ -63,23 +63,39 @@ void loop()
 {
   if (digitalRead(button1) == HIGH)
   {
-    i1++;
-    delay(500);
+    int i = 0;
+    
+    if (i = 100)
+      i1++;
+      
+    i++;
   }
   if (digitalRead(button2) == HIGH)
   {
-    i2++;
-    delay(500);
+    int i = 0;
+    
+    if (i = 100)
+      i2++;
+      
+    i++;
   }
   if (digitalRead(button3) == HIGH)
   {
-    i3++;
-    delay(500);
+    int i = 0;
+    
+    if (i = 100)
+      i3++;
+      
+    i++;
   }
   if (digitalRead(button4) == HIGH)
   {
-    i4++;
-    delay(500);
+    int i = 0;
+    
+    if (i = 100)
+      i4++;
+      
+    i++;
   }
     
   SevenSegDisplay(i1 * 1000 + i2 * 100 + i3 * 10 + i4);
