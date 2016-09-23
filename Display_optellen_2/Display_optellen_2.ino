@@ -32,7 +32,10 @@ const int disp2 = 3;
 const int disp3 = 4;
 const int disp4 = 5;
 
-const int button1 = 7;
+const int button1 = 6;
+const int button2 = 7;
+const int button3 = 8;
+const int button4 = 9;
 
 void setup() 
 {
@@ -46,22 +49,49 @@ void setup()
   pinMode(disp4, OUTPUT);
   
   pinMode(button1, INPUT);
+  pinMode(button2, INPUT);
+  pinMode(button3, INPUT);
+  pinMode(button4, INPUT);
 } 
 
-int i = 0;
+int i1 = 0;
+int i2 = 0;
+int i3 = 0;
+int i4 = 0;
 
 void loop() 
 {
   if (digitalRead(button1) == HIGH)
   {
-    i++;
+    i1++;
+    delay(500);
+  }
+  if (digitalRead(button2) == HIGH)
+  {
+    i2++;
+    delay(500);
+  }
+  if (digitalRead(button3) == HIGH)
+  {
+    i3++;
+    delay(500);
+  }
+  if (digitalRead(button4) == HIGH)
+  {
+    i4++;
     delay(500);
   }
     
-  SevenSegDisplay(i);
+  SevenSegDisplay(i1 * 1000 + i2 * 100 + i3 * 10 + i4);
   
-  if (i > 9999)
-    i = 0;
+  if (i1 > 9)
+    i1 = 0;
+  if (i2 > 9)
+    i2 = 0;
+  if (i3 > 9)
+    i3 = 0;
+  if (i4 > 9)
+    i4 = 0;
 }
 
 void DisplayADigit(int disp, byte digit)
