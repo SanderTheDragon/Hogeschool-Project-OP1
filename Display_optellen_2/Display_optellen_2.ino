@@ -53,11 +53,12 @@ int i = 0;
 void loop() 
 {
   if (digitalRead(button1) == HIGH)
+  {
     i++;
+    delay(500);
+  }
     
   SevenSegDisplay(i);
-  
-  delay(100);
   
   if (i > 9999)
     i = 0;
