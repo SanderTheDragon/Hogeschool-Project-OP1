@@ -115,7 +115,7 @@ void loop()
       
     i4t++;
   }
-   if (digitalRead(button1m) == HIGH)
+   if (analogRead(button1m) > 200)
   {
     if (i1tm == 10)
     {
@@ -126,7 +126,7 @@ void loop()
     i1tm++;
   }
 
-   if (digitalRead(button2m) == HIGH)
+   if (analogRead(button2m) > 200)
   {
     if (i2tm == 10)
     {
@@ -137,7 +137,7 @@ void loop()
     i2tm++;
   }
 
-   if (digitalRead(button3m) == HIGH)
+   if (analogRead(button3m) > 200)
   {
     if (i3tm == 10)
     {
@@ -148,7 +148,7 @@ void loop()
     i3tm++;
   }
 
-   if (digitalRead(button4m) == HIGH)
+   if (analogRead(button4m) > 200)
   {
     if (i4tm == 10)
     {
