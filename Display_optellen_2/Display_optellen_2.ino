@@ -68,7 +68,7 @@ void loop()
 {
   if (digitalRead(button1) == HIGH)
   { 
-    if (i1t = 100)
+    if (i1t = 1000)
     {
       i1++;
       i1t = 0;
@@ -78,7 +78,7 @@ void loop()
   }
   if (digitalRead(button2) == HIGH)
   { 
-    if (i2t = 100)
+    if (i2t = 1000)
     {
       i2++;
       i2t = 0;
@@ -88,7 +88,7 @@ void loop()
   }
   if (digitalRead(button3) == HIGH)
   { 
-    if (i3t = 100)
+    if (i3t = 1000)
     {
       i3++;
       i3t = 0;
@@ -98,7 +98,7 @@ void loop()
   }
   if (digitalRead(button4) == HIGH)
   {
-    if (i4t = 100)
+    if (i4t = 1000)
     {
       i4++;
       i4t = 0;

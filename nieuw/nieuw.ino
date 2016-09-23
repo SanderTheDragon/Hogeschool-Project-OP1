@@ -32,10 +32,10 @@ const int button2 = 7;
 const int button3 = 8;
 const int button4 = 9;
 
-const int button5 = A0;
-const int button6 = A1;
-const int button7 = A2;
-const int button8 = A3;
+const int button4m = A0;
+const int button3m = A1;
+const int button2m = A2;
+const int button1m = A3;
 
 void setup() 
 {
@@ -52,6 +52,11 @@ void setup()
   pinMode(button2, INPUT);
   pinMode(button3, INPUT);
   pinMode(button4, INPUT);
+  
+  pinMode(button1m, INPUT);
+  pinMode(button2m, INPUT);
+  pinMode(button3m, INPUT);
+  pinMode(button4m, INPUT);
 } 
 
 int i1 = 0;
@@ -63,6 +68,10 @@ int i1t = 0;
 int i2t = 0;
 int i3t = 0;
 int i4t = 0;
+int i1tm = 0;
+int i2tm = 0;
+int i3tm = 0;
+int i4tm = 0;
 
 void loop() 
 {
@@ -106,60 +115,69 @@ void loop()
       
     i4t++;
   }
-   if (digitalRead(button5) == HIGH)
+   if (digitalRead(button1m) == HIGH)
   {
-    if (i5t == 10)
+    if (i1tm == 10)
     {
-      i5++;
-      i5t = 0;
+      i1--;
+      i1tm = 0;
     }
       
-    i5t++;
+    i1tm++;
   }
 
-   if (digitalRead(button6) == HIGH)
+   if (digitalRead(button2m) == HIGH)
   {
-    if (i6t == 10)
+    if (i2tm == 10)
     {
-      i6++;
-      i6t = 0;
+      i2--;
+      i2tm = 0;
     }
       
-    i6t++;
+    i2tm++;
   }
 
-   if (digitalRead(button7) == HIGH)
+   if (digitalRead(button3m) == HIGH)
   {
-    if (i7t == 10)
+    if (i3tm == 10)
     {
-      i7++;
-      i7t = 0;
+      i3--;
+      i3tm = 0;
     }
       
-    i7t++;
+    i3tm++;
   }
 
-   if (digitalRead(button8) == HIGH)
+   if (digitalRead(button4m) == HIGH)
   {
-    if (i8t == 10)
+    if (i4tm == 10)
     {
-      i8++;
-      i8t = 0;
+      i4--;
+      i4tm = 0;
     }
       
-    i8t++;
+    i4tm++;
   }
      
-  SevenSegDisplay(i1 * 1000 + i2 * 100 + i3 * 10 + i4);
-  
   if (i1 > 9)
-    i1 = 0;
+    i1 = 9;
   if (i2 > 9)
-    i2 = 0;
+    i2 = 9;
   if (i3 > 9)
-    i3 = 0;
+    i3 = 9;
   if (i4 > 9)
+    i4 = 9;
+   
+  if (i1 < 0)
+    i1 = 0;
+  if (i2 < 0)
+    i2 = 0;
+  if (i3 < 0)
+    i3 = 0;
+  if (i4 < 0)
     i4 = 0;
+    
+  SevenSegDisplay(i1 * 1000 + i2 * 100 + i3 * 10 + i4);
 }
 
 void DisplayADigit(int disp, byte digit)
