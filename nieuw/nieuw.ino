@@ -18,9 +18,29 @@ const byte digits[16] =
      B10001110,  //F
 };
 
-const int latchPin = 10;
+const byte dotDigits[16] = 
+{
+     B11111101,  //0
+     B01100001,  //1
+     B11011011,  //2
+     B11110011,  //3
+     B01100111,  //4
+     B10110111,  //5
+     B10111111,  //6
+     B11100001,  //7
+     B11111111,  //8
+     B11110111,  //9
+     B11101111,  //A
+     B00111111,  //B
+     B00011011,  //C
+     B01111011,  //D
+     B10011111,  //E
+     B10001111,  //F
+};
+
 const int clockPin = 11;
 const int dataPin  = 12;
+const int latchPin = 13;
 
 const int disp1 = 2;
 const int disp2 = 3;
@@ -36,6 +56,8 @@ const int button4m = A0;
 const int button3m = A1;
 const int button2m = A2;
 const int button1m = A3;
+
+const int beeper = 10;
 
 void setup() 
 {
@@ -57,6 +79,8 @@ void setup()
   pinMode(button2m, INPUT);
   pinMode(button3m, INPUT);
   pinMode(button4m, INPUT);
+  
+  pinMode(beeper, OUTPUT);
 } 
 
 int i1 = 0;
@@ -73,117 +97,18 @@ int i2tm = 0;
 int i3tm = 0;
 int i4tm = 0;
 
+int dot = 0;
+
 void loop() 
 {
-  if (digitalRead(button1) == HIGH)
-  { 
-    if (i1t == 10)
-    {
-      i1++;
-      i1t = 0;
-    }
-      
-    i1t++;
-  }
-  if (digitalRead(button2) == HIGH)
-  { 
-    if (i2t == 10)
-    {
-      i2++;
-      i2t = 0;
-    }
-      
-    i2t++;
-  }
-  if (digitalRead(button3) == HIGH)
-  { 
-    if (i3t == 10)
-    {
-      i3++;
-      i3t = 0;
-    }
-      
-    i3t++;
-  }
-  if (digitalRead(button4) == HIGH)
-  {
-    if (i4t == 10)
-    {
-      i4++;
-      i4t = 0;
-    }
-      
-    i4t++;
-  }
-   if (analogRead(button1m) > 1000)
-  {
-    if (i1tm == 10)
-    {
-      i1--;
-      i1tm = 0;
-    }
-      
-    i1tm++;
-  }
-
-   if (analogRead(button2m) > 1000)
-  {
-    if (i2tm == 10)
-    {
-      i2--;
-      i2tm = 0;
-    }
-      
-    i2tm++;
-  }
-
-   if (analogRead(button3m) > 1000)
-  {
-    if (i3tm == 10)
-    {
-      i3--;
-      i3tm = 0;
-    }
-      
-    i3tm++;
-  }
-
-   if (analogRead(button4m) > 1000)
-  {
-    if (i4tm == 10)
-    {
-      i4--;
-      i4tm = 0;
-    }
-      
-    i4tm++;
-  }
-     
-  if (i1 > 9)
-    i1 = 9;
-  if (i2 > 9)
-    i2 = 9;
-  if (i3 > 9)
-    i3 = 9;
-  if (i4 > 9)
-    i4 = 9;
-   
-  if (i1 < 0)
-    i1 = 0;
-  if (i2 < 0)
-    i2 = 0;
-  if (i3 < 0)
-    i3 = 0;
-  if (i4 < 0)
-    i4 = 0;
-    
-  SevenSegDisplay(i1 * 1000 + i2 * 100 + i3 * 10 + i4);
+  ReadButtons();
+  DisplayNumber(i1 * 1000 + i2 * 100 + i3 * 10 + i4);
 }
 
-void DisplayADigit(int disp, byte digit)
+void DisplayDigit(int disp, byte digit)
 {
   digitalWrite(latchPin, LOW);
-  AllDispOff();
+  DisplayOff();
   
   shiftOut(dataPin, clockPin, LSBFIRST, digit);
   
@@ -192,7 +117,7 @@ void DisplayADigit(int disp, byte digit)
   delay(5);
 }
 
-void AllDispOff()
+void DisplayOff()
 {
   digitalWrite(disp1, HIGH);
   digitalWrite(disp2, HIGH);
@@ -200,7 +125,7 @@ void AllDispOff()
   digitalWrite(disp4, HIGH);
 }
 
-void SevenSegDisplay(int number)
+void DisplayNumber(int number)
 {
   int d1, d2, d3, d4;
   
@@ -216,8 +141,175 @@ void SevenSegDisplay(int number)
   d3 = (int) (number / 10);
   d4 = number - (d3 * 10);
   
-  DisplayADigit(disp1, byte(digits[d1]));
-  DisplayADigit(disp2, byte(digits[d2]));
-  DisplayADigit(disp3, byte(digits[d3]));
-  DisplayADigit(disp4, byte(digits[d4]));
+  if (dot & 1)
+    DisplayDigit(disp1, byte(dotDigits[d1]));
+  else
+    DisplayDigit(disp1, byte(digits[d1]));
+    
+  if (dot & 2)
+    DisplayDigit(disp2, byte(dotDigits[d2]));
+  else
+    DisplayDigit(disp2, byte(digits[d2]));
+    
+  if (dot & 4)
+    DisplayDigit(disp3, byte(dotDigits[d3]));
+  else
+    DisplayDigit(disp3, byte(digits[d3]));
+    
+  if (dot & 8)
+    DisplayDigit(disp4, byte(dotDigits[d4]));
+  else
+    DisplayDigit(disp4, byte(digits[d4]));
+}
+
+void ReadButtons()
+{
+  if (digitalRead(button1) == HIGH)
+  { 
+    if (i1t == 10)
+    {
+      i1++;
+      i1t = 0;
+      
+      Beep();
+    }
+      
+    i1t++;
+    dot |= 1;
+  }
+  
+  if (digitalRead(button2) == HIGH)
+  { 
+    if (i2t == 10)
+    {
+      i2++;
+      i2t = 0;      
+      
+      Beep();
+    }
+      
+    i2t++;
+    dot |= 2;
+  }
+  
+  if (digitalRead(button3) == HIGH)
+  { 
+    if (i3t == 10)
+    {
+      i3++;
+      i3t = 0;
+            
+      Beep();
+    }
+      
+    i3t++;
+    dot |= 4;
+  }
+  
+  if (digitalRead(button4) == HIGH)
+  {
+    if (i4t == 10)
+    {
+      i4++;
+      i4t = 0;
+            
+      Beep();
+    }
+      
+    i4t++;
+    dot |= 8;
+  }
+  
+  if (analogRead(button1m) > 1000)
+  {
+    if (i1tm == 10)
+    {
+      i1--;
+      i1tm = 0;
+            
+      Beep();
+    }
+      
+    i1tm++;
+    dot |= 1;
+  }
+
+  if (analogRead(button2m) > 1000)
+  {
+    if (i2tm == 10)
+    {
+      i2--;
+      i2tm = 0;
+      
+      Beep();
+    }
+      
+    i2tm++;
+    dot |= 2;
+  }
+
+  if (analogRead(button3m) > 1000)
+  {
+    if (i3tm == 10)
+    {
+      i3--;
+      i3tm = 0;
+      
+      Beep();
+    }
+      
+    i3tm++;
+    dot |= 4;
+  }
+
+  if (analogRead(button4m) > 1000)
+  {
+    if (i4tm == 10)
+    {
+      i4--;
+      i4tm = 0;
+      
+      Beep();
+    }
+      
+    i4tm++;
+    dot |= 8;
+  }
+     
+  if (i1 > 9)
+    i1 = 9;
+  if (i2 > 9)
+    i2 = 9;
+  if (i3 > 9)
+    i3 = 9;
+  if (i4 > 9)
+    i4 = 9;
+   
+  if (i1 <= 0)
+  {
+    i1 = 0;
+    dot &= ~1;
+  }
+  if (i2 <= 0)
+  {
+    i2 = 0;
+    dot &= ~2;
+  }
+  if (i3 <= 0)
+  {
+    i3 = 0;
+    dot &= ~4;
+  }
+  if (i4 <= 0)
+  {
+    i4 = 0;
+    dot &= ~8;
+  }
+}
+
+void Beep()
+{
+  analogWrite(beeper, 100);
+  delay(50);
+  analogWrite(beeper, 0);
 }
