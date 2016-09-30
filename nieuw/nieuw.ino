@@ -38,26 +38,31 @@ const byte dotDigits[16] =
      B10001111,  //F
 };
 
-const int clockPin = 11;
+const int clockPin = 8;
 const int dataPin  = 12;
 const int latchPin = 13;
 
 const int disp1 = 2;
 const int disp2 = 3;
-const int disp3 = 4;
-const int disp4 = 5;
+const int disp3 = 0;
+const int disp4 = 1;
 
-const int button1 = 6;
+const int button1 = 4;
 const int button2 = 7;
-const int button3 = 8;
-const int button4 = 9;
+const int button3 = A4;
+const int button4 = A5;
 
 const int button4m = A0;
 const int button3m = A1;
 const int button2m = A2;
 const int button1m = A3;
 
-const int beeper = 10;
+const int beeper = 11;
+
+const int led1 = 5;
+const int led2 = 6;
+const int led3 = 9;
+const int led4 = 10;
 
 void setup() 
 {
@@ -81,6 +86,11 @@ void setup()
   pinMode(button4m, INPUT);
   
   pinMode(beeper, OUTPUT);
+  
+  pinMode(led1, OUTPUT);
+  pinMode(led2, OUTPUT);
+  pinMode(led3, OUTPUT);
+  pinMode(led4, OUTPUT);
 } 
 
 int i1 = 0;
@@ -102,6 +112,7 @@ int dot = 0;
 void loop() 
 {
   ReadButtons();
+  Led();
   DisplayNumber(i1 * 1000 + i2 * 100 + i3 * 10 + i4);
 }
 
@@ -192,7 +203,7 @@ void ReadButtons()
     dot |= 2;
   }
   
-  if (digitalRead(button3) == HIGH)
+  if (analogRead(button3) > 1000)
   { 
     if (i3t == 10)
     {
@@ -206,7 +217,7 @@ void ReadButtons()
     dot |= 4;
   }
   
-  if (digitalRead(button4) == HIGH)
+  if (analogRead(button4) > 1000)
   {
     if (i4t == 10)
     {
@@ -312,4 +323,12 @@ void Beep()
   analogWrite(beeper, 100);
   delay(50);
   analogWrite(beeper, 0);
+}
+
+void Led()
+{
+  analogWrite(led1, 255 / i1);
+  analogWrite(led2, 255 / i2);
+  analogWrite(led3, 255 / i3);
+  analogWrite(led4, 255 / i4);
 }
