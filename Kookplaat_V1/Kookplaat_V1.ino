@@ -42,28 +42,34 @@ const int clockPin = 8;
 const int dataPin  = 12;
 const int latchPin = 13;
 
-const int displayPin[8] = { 0, 1, 2, 3, 5, 6, 9, 10 };
+const int displayPin[8] = { 
+  B01110111,
+  B10111011,
+  B11011101,
+  B11101110,
+  B01110111,
+  B10111011,
+  B11011101,
+  B11101110
+};
 
 const int beeperPin = 11;
 
-const int buttonPitUp = 4;     //Pit omhoog
-const int buttonTempUp = 7;    //Temperatuur omhoog
-const int buttonOn = A4;       //Aan
-const int buttonSafeOn = A5;   //Kinderslot aan
+const int buttonPitUp = A1;     //Pit omhoog
+const int buttonTempUp = A0;    //Temperatuur omhoog
+const int buttonOn = 9;         //Aan
+const int buttonSafeOn = 10;    //Kinderslot aan
 
-const int buttonPitDown = A3;  //Pit omlaag
-const int buttonTempDown = A2; //Temperatuur omlaag
-const int buttonOff = A1;      //Uit
-const int buttonSafeOff = A0;  //Kinderslot uit
+const int buttonPitDown = A5;  //Pit omlaag
+const int buttonTempDown = A4; //Temperatuur omlaag
+const int buttonOff = A3;      //Uit
+const int buttonSafeOff = A2;  //Kinderslot uit
 
 void setup()
 {
   pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
   pinMode(dataPin,  OUTPUT);
-  
-  for (int displayIndex = 0; displayIndex < 8; displayIndex++)
-    pinMode(displayPin[displayIndex], OUTPUT);
 
   pinMode(buttonPitUp, INPUT);
   pinMode(buttonTempUp, INPUT);
@@ -112,6 +118,7 @@ void loop()
     }
     
     DisplayNumber();
+    Leds();
   }
   else
   {
@@ -122,32 +129,28 @@ void loop()
 
 void DisplayDigit(int displayIndex, byte digitL, byte digitR)
 {
-  digitalWrite(latchPin, LOW);
   DisplayOff();
+  
+  digitalWrite(latchPin, LOW);
 
-  shiftOut(dataPin, clockPin, LSBFIRST, digitL);
+  shiftOut(dataPin, clockPin, LSBFIRST, displayPin[displayIndex]);
   shiftOut(dataPin, clockPin, LSBFIRST, digitR);
+  shiftOut(dataPin, clockPin, LSBFIRST, digitL);
 
   digitalWrite(latchPin, HIGH);
-  
-  if (displayIndex < 4)
-  {
-    digitalWrite(displayPin[displayIndex], LOW);
-    digitalWrite(displayPin[displayIndex + 4], LOW);
-  }
-  else
-  {
-    digitalWrite(displayPin[displayIndex - 4], LOW);
-    digitalWrite(displayPin[displayIndex], LOW);
-  }
   
   delay(1);
 }
 
 void DisplayOff()
 {
-  for (int displayIndex = 0; displayIndex < 8; displayIndex++)
-    digitalWrite(displayPin[displayIndex], HIGH);
+  digitalWrite(latchPin, LOW);
+
+  shiftOut(dataPin, clockPin, LSBFIRST, B11111111);
+  shiftOut(dataPin, clockPin, LSBFIRST, B00000000);
+  shiftOut(dataPin, clockPin, LSBFIRST, B00000000);
+
+  digitalWrite(latchPin, HIGH);
 }
 
 void DisplayNumber()
@@ -165,7 +168,7 @@ void DisplayNumber()
 
 void CheckLevel()
 {
-  if (digitalRead(buttonTempUp) == HIGH)
+  if (analogRead(buttonTempUp) > 1000)
   {
     if (bTempUp == 10)
     {
@@ -208,9 +211,9 @@ void Beep(int freq)
 
 void CheckOn()
 {
-  if (analogRead(buttonOn) > 1000 && !on)
+  if (digitalRead(buttonOn) == HIGH && !on)
   {
-    if (bOn == 5000)
+    if (bOn == 100)
     {
       on = true;
       
@@ -220,7 +223,7 @@ void CheckOn()
       delay(500);
       Beep(440);
       
-      for (int i = 0; i < 500; i++)
+      for (int i = 0; i < 250; i++)
       {
         DisplayDigit(0, digits[0], B00000000);
         DisplayDigit(1, B11101100, B00000000);
@@ -236,11 +239,11 @@ void CheckOn()
   
   if (analogRead(buttonOff) > 1000 && on)
   {
-    if (bOff == 50)
+    if (bOff == 100)
     {
       on = false;
       
-      for (int i = 0; i < 500; i++)
+      for (int i = 0; i < 250; i++)
       {
         DisplayDigit(0, digits[0], B00000000);
         DisplayDigit(1, digits[15], B00000000);
@@ -271,11 +274,11 @@ void CheckOn()
 
 void CheckPit()
 {
-  if (digitalRead(buttonPitUp) == HIGH)
+  if (analogRead(buttonPitUp) > 1000)
   {
     if (bPitUp == 30)
     {
-      bPitUp++;
+      pit++;
       
       if (pit > 7)
         pit = 0;
@@ -310,7 +313,7 @@ int t = 0;
 
 void CheckLock()
 {
-  if (analogRead(buttonSafeOn) > 1000 && !lock)
+  if (digitalRead(buttonSafeOn) == HIGH && !lock)
   {
     if (bSafeOn == 50)
     {
@@ -336,7 +339,7 @@ void CheckLock()
   
   if (analogRead(buttonSafeOff) > 1000 && lock)
   {
-    if (bSafeOff == 100)
+    if (bSafeOff == 50)
     {
       lock = false;
       
@@ -361,17 +364,22 @@ void CheckLock()
 
 void CheckBeep()
 {
-  if (digitalRead(buttonPitUp) == HIGH || digitalRead(buttonTempUp) == HIGH || analogRead(buttonOn) > 1000 || analogRead(buttonSafeOn) > 1000 || analogRead(buttonTempDown) > 1000 || analogRead(buttonPitDown) > 1000 || analogRead(buttonOff) > 1000)
+  if (analogRead(buttonPitUp) > 1000 || analogRead(buttonTempUp) > 1000 || digitalRead(buttonOn) == HIGH || digitalRead(buttonSafeOn) == HIGH || analogRead(buttonTempDown) > 1000 || analogRead(buttonPitDown) > 1000 || analogRead(buttonOff) > 1000)
   {
     Beep(220);
     
     for (int i = 0; i < 50; i++)
     {
         DisplayDigit(0, digits[5], digits[0]);
-        DisplayDigit(1, digits[10], digits[15]);
+        DisplayDigit(1, digits[10], B11101100);
         DisplayDigit(2, digits[15], B00000000);
         DisplayDigit(3, digits[14], B00000000);
     }
   }
+}
+
+void Leds()
+{
+  
 }
 
