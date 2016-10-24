@@ -1,0 +1,76 @@
+html, body
+{
+    left: 0;
+    top: 0;
+    
+    width: 100%;
+    height: 100%;
+    
+    margin: 0;
+}
+
+.content
+{
+    width: 100%;
+    
+    overflow: hidden;
+}
+
+.sidebar
+{
+    position: absolute;
+    top: 32px;
+    left: 0;
+    
+    width: 20%;
+    
+    border-right: 1px solid rgb(100, 100, 100);
+    
+    float: left;
+}
+
+.main
+{
+    width: 80%;
+    
+    display: inline-block;
+    
+    float: right;
+    
+    overflow: hidden;
+}
+
+.main > span, .main > a, .main > table
+{
+    padding-left: 16px;
+}
+
+img
+{
+    width: 40%;
+    height: 40%;
+    
+    border: 1px solid rgb(100, 100, 100);
+    
+    padding: 5px;
+}
+
+img.bigger
+{
+    width: 80%;
+    height: 80%;
+    
+    border: 1px solid rgb(100, 100, 100);
+    
+    padding: 0;
+}
+
+.code
+{
+    width: 90%;
+}
+
+td
+{
+    padding: 0 5px 0 5px;
+}
